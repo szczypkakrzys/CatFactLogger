@@ -34,7 +34,7 @@ public class CatFactService : ICatFactService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error while making an HTTP request to {Url}.", ApiUrl);
+            _logger.LogError(ex, "Error occured while making an HTTP request to {Url}.", ApiUrl);
             throw;
         }
     }
@@ -48,12 +48,18 @@ public class CatFactService : ICatFactService
                 PropertyNameCaseInsensitive = true
             });
 
-            return catFactResponse?.Fact ?? "No fact available.";
+            return catFactResponse?.Fact ?? ReturnFactDefaultValue(content);
         }
         catch (JsonException ex)
         {
             _logger.LogError(ex, "Failed to deserialize the cat fact JSON.");
-            throw new InvalidOperationException("Error processing the response from the Cat Fact API.", ex);
+            throw new InvalidOperationException("Error occured while processing the response from the Cat Fact API.", ex);
         }
+    }
+
+    private string ReturnFactDefaultValue(string apiResponse)
+    {
+        _logger.LogError("Cannot retrieve fact from api response: {Response}", apiResponse);
+        return "No fact available";
     }
 }

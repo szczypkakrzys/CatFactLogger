@@ -3,6 +3,7 @@ using CatFactLogger.Helpers;
 using CatFactLogger.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.IO.Abstractions;
 
 var serviceProvider = BuildServiceProvider(args);
 
@@ -25,7 +26,8 @@ static ServiceProvider BuildServiceProvider(string[] args)
     return new ServiceCollection()
         .AddHttpClient<ICatFactService, CatFactService>()
         .Services
-        .AddSingleton<IFileService, FileService>()
+        .AddSingleton<IFileSystem, FileSystem>()
+        .AddTransient<IFileService, FileService>()
         .AddSingleton(services =>
         {
             var catFactService = services.GetRequiredService<ICatFactService>();
